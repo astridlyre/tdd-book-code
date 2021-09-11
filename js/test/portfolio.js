@@ -19,4 +19,15 @@ describe("Test Portfolio class", function () {
       assert.deepStrictEqual(portfolio.evaluate("USD"), fifteenDollars);
     });
   });
+
+  describe("Test Addition in different currencies", function () {
+    it("should properly add money of different currencies, accounting for exchange rate", function () {
+      const seventeenDollars = new Money(17, "USD");
+      const portfolio = new Portfolio(
+        new Money(5, "USD"),
+        new Money(10, "EUR")
+      );
+      assert.deepStrictEqual(portfolio.evaluate("USD"), seventeenDollars);
+    });
+  });
 });

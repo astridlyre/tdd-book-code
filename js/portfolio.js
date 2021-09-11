@@ -14,8 +14,19 @@ export default class Portfolio {
 
   evaluate(currency) {
     return new Money(
-      this.#money.reduce((acc, money) => acc + money.amount, 0),
+      this.#money.reduce(
+        (acc, money) => acc + this.convert(money, currency),
+        0
+      ),
       currency
     );
+  }
+
+  convert(money, currency) {
+    const eurToUsd = 1.2;
+    if (money.currency === currency) {
+      return money.amount;
+    }
+    return money.amount * eurToUsd;
   }
 }
