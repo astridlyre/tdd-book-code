@@ -23,10 +23,13 @@ export default class Portfolio {
   }
 
   convert(money, currency) {
-    const eurToUsd = 1.2;
+    const exchangeRates = new Map([
+      ["EUR->USD", 1.2],
+      ["USD->KRW", 1100],
+    ]);
     if (money.currency === currency) {
       return money.amount;
     }
-    return money.amount * eurToUsd;
+    return money.amount * exchangeRates.get(`${money.currency}->${currency}`);
   }
 }

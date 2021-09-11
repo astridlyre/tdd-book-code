@@ -20,7 +20,7 @@ describe("Test Portfolio class", function () {
     });
   });
 
-  describe("Test Addition in different currencies", function () {
+  describe("Test Addition in different currencies USD+EUR->USD", function () {
     it("should properly add money of different currencies, accounting for exchange rate", function () {
       const seventeenDollars = new Money(17, "USD");
       const portfolio = new Portfolio(
@@ -28,6 +28,17 @@ describe("Test Portfolio class", function () {
         new Money(10, "EUR")
       );
       assert.deepStrictEqual(portfolio.evaluate("USD"), seventeenDollars);
+    });
+  });
+
+  describe("Test Addition in different currencies USD+KRW->KRW", function () {
+    it("should properly add money of different currencies, accounting for exchange rate", function () {
+      const portfolio = new Portfolio(
+        new Money(1, "USD"),
+        new Money(1100, "KRW")
+      );
+      const expectedValue = new Money(2200, "KRW");
+      assert.deepStrictEqual(portfolio.evaluate("KRW"), expectedValue);
     });
   });
 });

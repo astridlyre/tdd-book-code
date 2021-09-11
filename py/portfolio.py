@@ -7,13 +7,13 @@ from money import Money
 class Portfolio:
     def __init__(self, *moneys):
         self.moneys = []
-        self._eur_to_usd = 1.2
         self.moneys.extend(moneys)
 
     def __convert(self, aMoney, aCurrency):
+        exchangeRates = {"EUR->USD": 1.2, "USD->KRW": 1100}
         if aMoney.currency == aCurrency:
             return aMoney.amount
-        return aMoney.amount * self._eur_to_usd
+        return aMoney.amount * exchangeRates[aMoney.currency + "->" + aCurrency]
 
     def evaluate(self, currency):
         return Money(
