@@ -1,4 +1,11 @@
+import Exchange from "./exchange.js";
 import Money from "./money.js";
+
+class EvaluationError extends Error {
+  constructor(message) {
+    super(message);
+  }
+}
 
 export default class Portfolio {
   #money;
@@ -13,23 +20,20 @@ export default class Portfolio {
   }
 
   evaluate(currency) {
-    return new Money(
-      this.#money.reduce(
-        (acc, money) => acc + this.convert(money, currency),
-        0
-      ),
-      currency
-    );
-  }
+    const failures = [];
+    const total = this.#money.reduce((acc, money) => {
+      const exchange = new Exchange(money.currency, currency);
+      if (!exchange.rate) {
+        failures.push(exchange.key);
+        return acc;
+      }
+      return acc + exchange.rate * money.amount;
+    }, 0);
 
-  convert(money, currency) {
-    const exchangeRates = new Map([
-      ["EUR->USD", 1.2],
-      ["USD->KRW", 1100],
-    ]);
-    if (money.currency === currency) {
-      return money.amount;
+    if (failures.length === 0) {
+      return new Money(total, currency);
     }
-    return money.amount * exchangeRates.get(`${money.currency}->${currency}`);
+
+    throw new EvaluationError(`Missing exchange rate(s): [${failures.join()}]`);
   }
 }

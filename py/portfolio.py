@@ -1,6 +1,3 @@
-import functools
-import operator
-
 from money import Money
 
 
@@ -16,12 +13,19 @@ class Portfolio:
         return aMoney.amount * exchangeRates[aMoney.currency + "->" + aCurrency]
 
     def evaluate(self, currency):
-        return Money(
-            functools.reduce(
-                operator.add, map(lambda m: self.__convert(m, currency), self.moneys), 0
-            ),
-            currency,
-        )
+        total = 0.0
+        failures = []
+        for m in self.moneys:
+            try:
+                total += self.__convert(m, currency)
+            except KeyError as ke:
+                failures.append(ke)
+
+        if len(failures) == 0:
+            return Money(total, currency)
+
+        failureMessage = ",".join(f.args[0] for f in failures)
+        raise Exception(f"Missing exchange rate(s): [{failureMessage}]")
 
     def add(self, *moneys):
         self.moneys.extend(moneys)

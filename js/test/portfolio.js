@@ -41,4 +41,18 @@ describe("Test Portfolio class", function () {
       assert.deepStrictEqual(portfolio.evaluate("KRW"), expectedValue);
     });
   });
+
+  describe("Test Addition with multiple missing exchange rates", function () {
+    it("should throw an error with a list of missing exchange rates", function () {
+      const portfolio = new Portfolio(
+        new Money(1, "USD"),
+        new Money(1, "EUR"),
+        new Money(1, "KRW")
+      );
+      const expectedError = new Error(
+        "Missing exchange rate(s): [USD->Kalganid,EUR->Kalganid,KRW->Kalganid]"
+      );
+      assert.throws(() => portfolio.evaluate("Kalganid"), expectedError);
+    });
+  });
 });
