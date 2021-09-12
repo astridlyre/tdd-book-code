@@ -22,9 +22,9 @@ export default class Portfolio {
     );
     const failures = converted.filter(result => result.status === "rejected");
     if (failures.length === 0) {
-      return new Money(
-        converted.reduce((acc, result) => acc + result.value.amount, 0),
-        aCurrency
+      return converted.reduce(
+        (acc, result) => acc.add(result.value),
+        new Money(0, aCurrency)
       );
     }
     throw new Error(
