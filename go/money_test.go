@@ -104,13 +104,18 @@ func TestAdditionWithMultipleMissingExchangeRates(t *testing.T) {
 	assertEqual(t, expectedErrorMessage, actualError.Error())
 }
 
-func TestConversion(t *testing.T) {
+func TestConversionWithDifferentRatesBetweenTwoCurrencies(t *testing.T) {
 	bank := s.NewBank()
-	bank.AddExchangeRate("EUR", "USD", 1.2)
+	bank.AddExchangeRate("EUR", "KRW", 1300)
 	tenEuros := s.NewMoney(10, "EUR")
-	actualConvertedMoney, err := bank.Convert(tenEuros, "USD")
+	actualConvertedMoney, err := bank.Convert(tenEuros, "KRW")
 	assertNil(t, err)
-	assertEqual(t, s.NewMoney(12, "USD"), *actualConvertedMoney)
+	assertEqual(t, s.NewMoney(13000, "KRW"), *actualConvertedMoney)
+
+	bank.AddExchangeRate("EUR", "KRW", 1344)
+	actualConvertedMoney, err = bank.Convert(tenEuros, "KRW")
+	assertNil(t, err)
+	assertEqual(t, s.NewMoney(13440, "KRW"), *actualConvertedMoney)
 }
 
 func TestConversionWithMissingExchangeRate(t *testing.T) {
