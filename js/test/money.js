@@ -26,4 +26,28 @@ describe("Test Money class", function () {
       assert.deepStrictEqual(originalMoney.divide(4), expectedMoney);
     });
   });
+
+  describe("Test Dollars", function () {
+    it("should add dollars correctly and have the proper currency value", function () {
+      const originalMoney = new Money(50, "USD");
+      const expectedMoney = new Money(69, "USD");
+      assert.deepStrictEqual(originalMoney.add(19), expectedMoney);
+    });
+  });
+
+  describe("Test Subtraction of Won", function () {
+    it("should substract dollars correctly and have the proper currency value", function () {
+      const originalMoney = new Money(5004, "KRW");
+      const expectedMoney = new Money(5000, "KRW");
+      assert.deepStrictEqual(originalMoney.subtract(4), expectedMoney);
+    });
+  });
+
+  describe("Division by zero should throw an error", function () {
+    it("should throw a TypeError when attempting to divide by zero", function () {
+      const originalMoney = new Money(40, "USD");
+      const error = new TypeError("Cannot divide by zero");
+      assert.throws(() => originalMoney.divide(0), error);
+    });
+  });
 });

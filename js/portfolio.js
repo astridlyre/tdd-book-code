@@ -1,5 +1,9 @@
 import Money from "./money.js";
 
+function createErrorMessage(failures) {
+  return failures.map(failure => failure.reason).join();
+}
+
 export default class Portfolio {
   #money;
 
@@ -17,18 +21,14 @@ export default class Portfolio {
       this.#money.map(aMoney => exchange.convert(aMoney, aCurrency))
     );
     const failures = converted.filter(result => result.status === "rejected");
-
     if (failures.length === 0) {
       return new Money(
         converted.reduce((acc, result) => acc + result.value.amount, 0),
         aCurrency
       );
     }
-
     throw new Error(
-      `Missing exchange rate(s): [${failures
-        .map(failure => failure.reason)
-        .join()}]`
+      `Missing exchange rate(s): [${createErrorMessage(failures)}]`
     );
   }
 }

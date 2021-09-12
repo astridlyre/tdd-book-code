@@ -10,24 +10,26 @@ func (p Portfolio) Add(money Money) Portfolio {
 }
 
 func (p Portfolio) Evaluate(bank Bank, currency string) (*Money, error) {
-	var result Money
 	total := 0.0
-	failedConversations := make([]string, 0)
+	failedConversions := make([]string, 0)
 	for _, m := range p {
 		if convertedCurrency, err := bank.Convert(m, currency); err == nil {
 			total = total + convertedCurrency.amount
 		} else {
-			failedConversations = append(failedConversations, err.Error())
+			failedConversions = append(failedConversions, err.Error())
 		}
 	}
-	if len(failedConversations) == 0 {
-		result = NewMoney(total, currency)
+	if len(failedConversions) == 0 {
+		result := NewMoney(total, currency)
 		return &result, nil
 	}
+	return nil, errors.New("Missing exchange rate(s): " + createFailureMessage(failedConversions))
+}
+
+func createFailureMessage(failedConversions []string) string {
 	failures := "["
-	for _, f := range failedConversations {
+	for _, f := range failedConversions {
 		failures = failures + f + ","
 	}
-	failures = failures + "]"
-	return nil, errors.New("Missing exchange rate(s): " + failures)
+	return failures + "]"
 }
