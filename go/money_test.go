@@ -26,21 +26,35 @@ func assertNil(t *testing.T, actual interface{}) {
 	}
 }
 
+func TestAddition(t *testing.T) {
+	originalMoney := s.NewMoney(15, "USD")
+	actualResult := originalMoney.Add(5)
+	expectedResult := s.NewMoney(20, "USD")
+	assertEqual(t, expectedResult, actualResult)
+}
+
+func TestSubtraction(t *testing.T) {
+	originalMoney := s.NewMoney(70, "EUR")
+	actualResult := originalMoney.Subtract(1)
+	expectedResult := s.NewMoney(69, "EUR")
+	assertEqual(t, expectedResult, actualResult)
+}
+
 func TestMultiplication(t *testing.T) {
 	originalMoney := s.NewMoney(10, "EUR")
-	actualResult := originalMoney.Times(2)
+	actualResult := originalMoney.Times(2.0)
 	expectedResult := s.NewMoney(20, "EUR")
 	assertEqual(t, expectedResult, actualResult)
 }
 
 func TestDivision(t *testing.T) {
 	originalMoney := s.NewMoney(4002, "KRW")
-	actualResult := originalMoney.Divide(4)
+	actualResult := originalMoney.Divide(4.0)
 	expectedResult := s.NewMoney(1000.5, "KRW")
 	assertEqual(t, expectedResult, actualResult)
 }
 
-func TestAddition(t *testing.T) {
+func TestEvaluation(t *testing.T) {
 	var portfolio s.Portfolio
 
 	fiveDollars := s.NewMoney(5, "USD")
