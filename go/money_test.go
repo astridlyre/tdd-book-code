@@ -86,3 +86,18 @@ func TestAdditionWithMultipleMissingExchangeRates(t *testing.T) {
 
 	assertEqual(t, expectedErrorMessage, actualError.Error())
 }
+
+func TestConversion(t *testing.T) {
+	bank := s.NewBank()
+	bank.AddExchangeRate("EUR", "USD", 1.2)
+	tenEuros := s.NewMoney(10, "EUR")
+	actualConvertedMoney, err := bank.Convert(tenEuros, "USD")
+	assertNil(t, err)
+	assertEqual(t, s.NewMoney(12, "USD"), actualConvertedMoney)
+}
+
+func assertNil(t *testing.T, err error) {
+	if err != nil {
+		t.Errorf("Expected error to be nil, found: [%s]", err)
+	}
+}

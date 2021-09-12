@@ -1,4 +1,3 @@
-import Exchange from "./exchange.js";
 import Money from "./money.js";
 
 class EvaluationError extends Error {
@@ -19,21 +18,23 @@ export default class Portfolio {
     return this;
   }
 
-  evaluate(currency) {
-    const failures = [];
-    const total = this.#money.reduce((acc, money) => {
-      const exchange = new Exchange(money.currency, currency);
-      if (!exchange.rate) {
-        failures.push(exchange.key);
-        return acc;
-      }
-      return acc + exchange.rate * money.amount;
-    }, 0);
+  async evaluate(aCurrency, exchange) {
+    const converted = await Promise.allSettled(
+      this.#money.map(aMoney => exchange.convert(aMoney, aCurrency))
+    );
+    const failures = converted.filter(result => result.status === "rejected");
 
     if (failures.length === 0) {
-      return new Money(total, currency);
+      return new Money(
+        converted.reduce((acc, result) => acc + result.value.amount, 0),
+        aCurrency
+      );
     }
 
-    throw new EvaluationError(`Missing exchange rate(s): [${failures.join()}]`);
+    throw new EvaluationError(
+      `Missing exchange rate(s): [${failures
+        .map(failure => failure.reason)
+        .join()}]`
+    );
   }
 }

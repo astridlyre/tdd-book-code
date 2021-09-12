@@ -1,28 +1,29 @@
+import Money from "./money.js";
+
 export default class Exchange {
-  constructor(from, to) {
-    this.from = from;
-    this.to = to;
+  #exchangeRates = new Map();
+
+  static #keyFrom(from, to) {
+    return `${from}->${to}`;
   }
 
-  toString() {
-    return `${this.key}: ${this.rate}`;
+  addExchangeRate({ from = "", to = "", value = 0 } = {}) {
+    this.#exchangeRates.set(Exchange.#keyFrom(from, to), value);
+    return this;
   }
 
-  get key() {
-    return `${this.from}->${this.to}`;
+  async getRate(from, to) {
+    return this.#exchangeRates.get(Exchange.#keyFrom(from, to));
   }
 
-  get rate() {
-    if (this.from === this.to) return 1; // Always equals itself
-    return Exchange.getRate(this.key);
+  async convert(aMoney, aCurrency) {
+    if (aMoney.currency === aCurrency) {
+      return aMoney;
+    }
+    const rate = await this.getRate(aMoney.currency, aCurrency);
+    if (!rate) {
+      return Promise.reject(Exchange.#keyFrom(aMoney.currency, aCurrency));
+    }
+    return new Money(aMoney.amount * rate, aCurrency);
   }
-
-  static getRate(key) {
-    return Exchange.exchangeRates.get(key);
-  }
-
-  static exchangeRates = new Map([
-    ["EUR->USD", 1.2],
-    ["USD->KRW", 1100],
-  ]);
 }
