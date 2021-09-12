@@ -1,11 +1,5 @@
 import Money from "./money.js";
 
-class EvaluationError extends Error {
-  constructor(message) {
-    super(message);
-  }
-}
-
 export default class Portfolio {
   #money;
 
@@ -31,7 +25,7 @@ export default class Portfolio {
       );
     }
 
-    throw new EvaluationError(
+    throw new Error(
       `Missing exchange rate(s): [${failures
         .map(failure => failure.reason)
         .join()}]`

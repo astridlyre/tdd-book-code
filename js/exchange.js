@@ -18,7 +18,7 @@ export default class Exchange {
 
   async convert(aMoney, aCurrency) {
     if (aMoney.currency === aCurrency) {
-      return aMoney;
+      return new Money(aMoney.amount, aCurrency);
     }
     const rate = await this.getRate(aMoney.currency, aCurrency);
     if (!rate) {
