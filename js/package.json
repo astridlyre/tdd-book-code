@@ -1,15 +1,15 @@
 {
   "name": "js",
   "version": "1.0.0",
-  "description": "",
+  "description": "Test-Driven Development Book",
   "main": "test_money.js",
   "type": "module",
   "scripts": {
     "test": "mocha"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Erin Burton",
+  "license": "MIT",
   "dependencies": {
     "mocha": "^9.1.1"
   }

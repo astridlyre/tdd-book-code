@@ -19,5 +19,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Test
-        run: npm install && npm test
+        run: |
+          cd js
+          npm install && npm test
         shell: bash
